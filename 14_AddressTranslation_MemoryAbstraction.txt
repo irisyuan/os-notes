@@ -1,0 +1,26 @@
+Start Lecture #14
+
+Q: When is address translation performed?
+Let's explore the options.
+
+Option 1: At program writing time
+
+Option 2: At compile time
+
+Option 3: At link-edit time ("linker lab")
+
+Option 4: At load time
+
+Option 5: At execution time
+
+Commonly used: "dynamic linking" (come back to this)
+
+
+3.1 No Memory Management
+
+3.2 Memory Abstraction: Address Spaces
+  
+  3.2.1 What's an address space
+  3.2.2 Swapping
+  3.2.3 Managing Free Memory
+
