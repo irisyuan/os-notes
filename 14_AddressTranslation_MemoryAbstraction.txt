@@ -1,26 +1,93 @@
 Start Lecture #14
 
-Q: When is address translation performed?
-Let's explore the options.
+Q: When is address translation best performed?
+A: Let's explore the options through history.
 
 Option 1: At program writing time
+  - programmer explicitly says where everything goes
+  - haha... no thank you. 
 
 Option 2: At compile time
+  - compiler generates physical addresses so a linker isn't needed
+  - primitive and rarely used, only MSDOS .COM
 
 Option 3: At link-edit time ("linker lab")
+  - compiler -> linker is used to relocate relative addresses and resolve external addresses
+  - hardware requirements are small, but program cna't move once it's loaded
+  - not used much anymore
 
 Option 4: At load time
+  - similar to option 3, but program can't move (though it can't be split)
+  - the starting address isn't fixed
+  - need hardware for base/limit registers... not used much anymore
 
 Option 5: At execution time
+  - addresses translated dynamically during execution
+  - hardware is needed to do this quickly
+  - this is what's commonly used (see "Dynamic linking" in later notes)
+  
+=====================================================================================
 
-Commonly used: "dynamic linking" (come back to this)
-
-
-3.1 No Memory Management
+3.1 No Memory Abstraction (monoprogramming/ multiprogramming in "the good ol' days")
+Monoprogramming
+  - no address translation done by OS at all
+  - either reload OS for every single job, or don't have an OS at all
+  - used OVERLAYS if the memory needed for a job > existing available: 
+    - programmer breaks program into pieces, with one as the root
+    - the root has calls to load/unload other pieces
+    - programmer's responsibility to ensure a piece is already loaded when called
+    - see: http://cs.nyu.edu/~gottlieb/courses/os/diagrams/monoprogramming.png
+    
+Multiprogramming with Fixed Partitions
+- Review: two core goals of multiprogramming are to 1) optimize CPU usage by overlapping CPU and I/O, and 2) permit short jobs to finish quickly.
+  - partition boundaries not movable, and of fixed size
+  - wasted space with internal fragmentation (inside regions of memory assigned to a process)
+  - physical addr. is also continguous
+  - no dymanic address translation, no sharing of memory between processes
+  - this is sad
+  - see: http://cs.nyu.edu/~gottlieb/courses/os/diagrams/MFT.png
+  
+=====================================================================================
 
 3.2 Memory Abstraction: Address Spaces
   
-  3.2.1 What's an address space
-  3.2.2 Swapping
-  3.2.3 Managing Free Memory
+3.2.1 Overview of address spaces, base and limit registers' functions
+  - creates an "abstract memory" for programs to live in
+  - permits each process to believe it has its own memory starting at address zero
+  
+  Base and limit registers
+  - additional hardware, invisible to programmer, that supports multiprogramming by automatically adding the base address (i.e., the value in the base register) to every relative address when that address is accessed at run time
+  - relative address is compared against the value in the limit register
+    - if larger, the processes aborted since it has exceeded its memory bound
+  - base and limit register are set by the OS when the job starts
+  
+3.2.2 Swapping: moving an entire process between disk and memory
+  - Uses dynamic address translation
+  - Variable partitions and sizes - dynamically change over time to optimize for multiprogramming
+  - see: http://cs.nyu.edu/~gottlieb/courses/os/diagrams/MVT.png
+  
+  - ** Eliminates internal fragmentation because wasted space is reduced
+  - ** Introduces external fragmentation because now we have holes outside, instead of inside, memory assigned to a process
+  - Base and limit registers are used
+  
+3.2.3 Managing Free Memory
+Introduced to the problem of which partition we should use/ fill up?
 
+  - Best known solution is circular fit: Use the first hole that is big enough (first fit) but start looking where you left off last time.
+  - Doesn't waste time constantly trying to use small holes that have failed before, but does tend to use many of the big holes, which can be a problem.
+
+Memory Management with Bitmaps
+  - How much memory does each bit represent?
+  - Divide memory into blocks; each bit associates with a block that says if that block is free or not
+  - To find a chunk of size N blocks, find N consecutive bits indicating a free block.
+  - Problem: tons of (potential) internal fragmentation
+
+Memory Management with Linked Lists (singly or doubled)
+  - each node corresponds to a region of memory either allocated to a process or still available (a hole)
+  - list is kept in order of starting address
+  - when freeing memory, merge adjacent holes
+  - items on the list are not taken from memory to be used by processes
+  
+The "Replacement Question": Which victim should we swap out?
+- demonstrates the suspend arc mentioned in process scheduling!!!
+- demand paging: to be continued
