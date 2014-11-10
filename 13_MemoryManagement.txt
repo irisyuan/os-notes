@@ -1,0 +1,41 @@
+Chapter 3 Memory Management
+Also called storage management or space management.
+
+The memory manager deals with storage hierarchy.
+
+The hierarchy consists of:
+- registers (the highest level)
+- cache
+- central memory **
+- disk boundary **
+
+Various (hardware and software) memory managers move data from level to level of this hierarchy.
+We are concerned with the last two: central memory ↔ disk boundary.
+
+When should we move data up the hierarchy?
+- Fetch on demand (e.g., demand paging) is most dominant
+- Prefetch
+    - Read-ahead for file I/O
+    - Software or hardware prefetching
+    - Large cache lines and pages
+    - Extreme example (entire job present whenever running)
+    
+Unless the top level has sufficient memory for the entire system, we must also decide when to move data down, or EVICT DATA from a higher to lower level. 
+
+Three main considerations: 
+Should we have segmentation?
+Should we have paging?
+Should we employ fetch on demand?
+
+Memory management unit (MMU) implements address translation:
+- Convert virtual addresses (addr. expressed in the program) to physical addresses (addr. understood by hardware).
+
+Another example of address translation is relative -> absolute addresses (by the linker).
+- Could be slow
+- Could addition/shift/mask—not too bad
+- Could use memory references
+  - Cache translations in a Translation Lookaside Buffer (TLB)
+
+Q: What is the difference between a virtual and physical address?
+A:  A virtual address is the address expressed in the program.
+    A physical address is the address understood by the computer hardware.
