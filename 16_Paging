@@ -1,0 +1,7 @@
+The simplest way to remove the requirement of contiguous physical memory.
+
+Q: How does paging work?
+
+Properties of (non-demand) paging (without segmentation):
+
+Address translation
